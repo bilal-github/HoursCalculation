@@ -3,19 +3,21 @@ package com.example.hourscalculator;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.datepicker.MaterialDatePicker;
-import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.Calendar;
 import java.util.Objects;
 import java.util.TimeZone;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class MainActivity extends AppCompatActivity {
     private Button btnDate, btnSubmit;
@@ -61,37 +63,54 @@ public class MainActivity extends AppCompatActivity {
         btnSubmit.setOnClickListener((View view) -> {
             String date = dateView.getText().toString();
             Float numOfHours = Float.parseFloat(Objects.requireNonNull(hoursInput.getText()).toString());
-            if (!dbHelper.dateExists(date)) {
-                Boolean isInserted = dbHelper.insert(date, numOfHours);
-                if (isInserted) {
+
+            if (dbHelper.dateExists(date)) {
+                Boolean isUpdate = showDialog("Update?", "This date already exists. Do you want to update the hours?");
+                Log.i("isUpdate", isUpdate.toString());
+            } else {
+                if (dbHelper.insert(date, numOfHours)) {
                     Toast.makeText(MainActivity.this, "Hours Inserted", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(MainActivity.this, "Hours Not Inserted", Toast.LENGTH_SHORT).show();
                 }
-            } else {
 
             }
-
         });
-}
+    }
 
-    //create alert which takes in yes and no
-    //if yes, update the hours
-    //if no, do nothing
     private Boolean showDialog(String title, String message) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(message).setCancelable(false)
-                .setPositiveButton("Yes", (dialog, id) -> {
-                    return true;
+        AtomicReference<Boolean> result = new AtomicReference<>(false);
+        AlertDialog builder = new AlertDialog.Builder(this)
+                .setTitle(title)
+                .setMessage(message)
+                .setPositiveButton("Yes", (dialog, i) -> {
+                    updateButtonClicked(true);
+                    result.set(true);
+                    dialog.dismiss();
                 })
-                .setNegativeButton("No", (dialog, id) -> {
-                    return false;
+                .setNegativeButton("No", (dialog, i) -> {
+                    updateButtonClicked(false);
                     dialog.cancel();
-                });
+                })
+                .show();
+        return result.get();
 
-        AlertDialog alert = builder.create();
-        alert.setTitle(title);
-        alert.show();
+    }
 
+    private void updateButtonClicked(boolean isUpdate) {
+        String date = dateView.getText().toString();
+        Float numOfHours = Float.parseFloat(Objects.requireNonNull(hoursInput.getText()).toString());
+
+        if (isUpdate) {
+            updateEntry(date, numOfHours);
+        }
+    }
+
+    private void updateEntry(String date, Float numOfHours) {
+        if (dbHelper.update(date, numOfHours)) {
+            Toast.makeText(MainActivity.this, "Hours Updated", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(MainActivity.this, "Hours Not Updated", Toast.LENGTH_SHORT).show();
+        }
     }
 }
