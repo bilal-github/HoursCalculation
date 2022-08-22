@@ -59,11 +59,7 @@ public class DBHelper extends SQLiteOpenHelper {
         try (Cursor cursor = db.rawQuery("SELECT * from " + HOURS_DATA + " where DATE = ?", new String[]{date})) {
             if (cursor.getCount() > 0) {
                 long result = db.update(HOURS_DATA, _contentValues, "Date = ?", new String[]{date});
-                if (result == 1) {
-                    return true;
-                } else {
-                    return false;
-                }
+                return result == 1;
             }
         } catch (RuntimeException e) {
             throw e;

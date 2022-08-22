@@ -31,6 +31,22 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/selectADate" />
 
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/dateRequired"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginEnd="32dp"
+        android:text="@string/required_helper_text"
+        android:textAlignment="center"
+        android:textColor="@color/red"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnDate" />
+
     <LinearLayout
         android:id="@+id/date_label_layout"
         android:layout_width="match_parent"
@@ -39,7 +55,7 @@
         android:layout_marginTop="24dp"
         android:layout_marginEnd="32dp"
         android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@+id/btnDate">
+        app:layout_constraintTop_toBottomOf="@+id/dateRequired">
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/dateLabel"
@@ -69,10 +85,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="20dp"
         android:layout_marginEnd="32dp"
         android:hint="@string/enter_number_of_hours"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/date_label_layout">
 
@@ -82,6 +99,23 @@
             android:layout_height="wrap_content"
             android:inputType="numberDecimal" />
     </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/hoursRequired"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginEnd="32dp"
+        android:paddingStart="4dp"
+        android:paddingEnd="4dp"
+        android:text="@string/required_helper_text"
+        android:textColor="@color/red"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/numOfHoursLayout" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnSubmit"
