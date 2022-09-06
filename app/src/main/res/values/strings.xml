@@ -7,4 +7,6 @@
     <string name="date_label">Date:</string>
     <string name="submit">Submit</string>
     <string name="required_helper_text">Required</string>
+    <string name="home">Home</string>
+    <string name="calendar">Calendar</string>
 </resources>
