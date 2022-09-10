@@ -31,7 +31,7 @@ public class CalendarFragment extends Fragment {
                 .setMaximumDate(LocalDate.of(2100, Month.DECEMBER, 31))
                 .setCalendarDisplayMode(CalendarMode.MONTHS)
                 .commit();
-
+        materialCalendarView.addDecorator(new CurrentDateDecorator(getContext()));
         materialCalendarView.setDateSelected(CalendarDay.today(), true);
 
         return view;
