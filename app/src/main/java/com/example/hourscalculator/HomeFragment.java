@@ -16,16 +16,21 @@ import androidx.fragment.app.Fragment;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.textfield.TextInputEditText;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.Calendar;
 import java.util.Objects;
 import java.util.TimeZone;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class HomeFragment extends Fragment {
-    private TextView dateView, dateLabel, dateRequired, hoursRequired;
-    private TextInputEditText hoursInput;
+    private TextView _dateView, _dateLabel, _dateRequired, _hoursRequired;
+    private TextInputEditText _hoursInput;
+    private LocalDate _date = LocalDate.now();
 
-    private DBHelper dbHelper;
+    private DBHelper _dbHelper;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -39,13 +44,13 @@ public class HomeFragment extends Fragment {
         Button btnDate = v.findViewById(R.id.btnDate);
         Button btnSubmit = v.findViewById(R.id.btnSubmit);
 
-        dateView = v.findViewById(R.id.dateView);
-        dateRequired = v.findViewById(R.id.dateRequired);
-        hoursRequired = v.findViewById(R.id.hoursRequired);
-        dateLabel = v.findViewById(R.id.dateLabel);
-        hoursInput = v.findViewById(R.id.numOfHours);
+        _dateView = v.findViewById(R.id.dateView);
+        _dateRequired = v.findViewById(R.id.dateRequired);
+        _hoursRequired = v.findViewById(R.id.hoursRequired);
+        _dateLabel = v.findViewById(R.id.dateLabel);
+        _hoursInput = v.findViewById(R.id.numOfHours);
 
-        dbHelper = new DBHelper(v.getContext());
+        _dbHelper = new DBHelper(v.getContext());
 
         Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
         calendar.clear();
@@ -56,23 +61,23 @@ public class HomeFragment extends Fragment {
                 .build();
 
         btnDate.setOnClickListener(view -> datePicker.show(getChildFragmentManager(), "DATE_PICKER"));
-
-        datePicker.addOnPositiveButtonClickListener((Long selection) -> {
-            dateLabel.setVisibility(TextView.VISIBLE);
-            dateView.setVisibility(View.VISIBLE);
-            dateView.setText(datePicker.getHeaderText());
-            dateRequired.setVisibility(TextView.INVISIBLE);
+        datePicker.addOnPositiveButtonClickListener((Long selectedDate) -> {
+            _dateLabel.setVisibility(TextView.VISIBLE);
+            _dateView.setVisibility(View.VISIBLE);
+            _dateView.setText(datePicker.getHeaderText());
+            ZonedDateTime zonedDateTime = Instant.ofEpochMilli(selectedDate).atZone(ZoneOffset.UTC);
+            _date = zonedDateTime.toLocalDate();
+            _dateRequired.setVisibility(TextView.INVISIBLE);
         });
 
         btnSubmit.setOnClickListener((View view) -> {
             if (fieldsNotEmpty()) {
-                String date = dateView.getText().toString();
-                Float numOfHours = Float.parseFloat(Objects.requireNonNull(hoursInput.getText()).toString());
-                if (dbHelper.dateExists(date)) {
+                Float numOfHours = Float.parseFloat(Objects.requireNonNull(_hoursInput.getText()).toString());
+                if (_dbHelper.dateExists(_date)) {
                     Boolean isUpdate = updatePrompt(getContext());
                     Log.i("isUpdate", isUpdate.toString());
                 } else {
-                    if (dbHelper.insert(date, numOfHours)) {
+                    if (_dbHelper.insert(_date, numOfHours)) {
                         Toast.makeText(getContext(), "Hours Inserted", Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(getContext(), "Hours Not Inserted", Toast.LENGTH_SHORT).show();
@@ -81,12 +86,12 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        hoursInput.setOnFocusChangeListener((View view, boolean hasFocus) -> {
+        _hoursInput.setOnFocusChangeListener((View view, boolean hasFocus) -> {
                     if (!hasFocus) {
-                        if (Objects.requireNonNull(hoursInput.getText()).toString().isEmpty()) {
-                            hoursRequired.setVisibility(TextView.VISIBLE);
+                        if (Objects.requireNonNull(_hoursInput.getText()).toString().isEmpty()) {
+                            _hoursRequired.setVisibility(TextView.VISIBLE);
                         } else {
-                            hoursRequired.setVisibility(TextView.INVISIBLE);
+                            _hoursRequired.setVisibility(TextView.INVISIBLE);
                         }
                     }
                 }
@@ -95,10 +100,10 @@ public class HomeFragment extends Fragment {
     }
 
     private Boolean fieldsNotEmpty() {
-        if (dateView.getText().toString().isEmpty()) {
+        if (_dateView.getText().toString().isEmpty()) {
             Toast.makeText(getContext(), "Please select a date", Toast.LENGTH_SHORT).show();
             return false;
-        } else if (Objects.requireNonNull(hoursInput.getText()).toString().isEmpty()) {
+        } else if (Objects.requireNonNull(_hoursInput.getText()).toString().isEmpty()) {
             Toast.makeText(getContext(), "Please enter number of hours", Toast.LENGTH_SHORT).show();
             return false;
         }
@@ -125,16 +130,15 @@ public class HomeFragment extends Fragment {
     }
 
     private void updateButtonClicked(boolean isUpdate) {
-        String date = dateView.getText().toString();
-        Float numOfHours = Float.parseFloat(Objects.requireNonNull(hoursInput.getText()).toString());
+        Float numOfHours = Float.parseFloat(Objects.requireNonNull(_hoursInput.getText()).toString());
 
         if (isUpdate) {
-            updateEntry(date, numOfHours);
+            updateEntry(_date, numOfHours);
         }
     }
 
-    private void updateEntry(String date, Float numOfHours) {
-        if (dbHelper.update(date, numOfHours)) {
+    private void updateEntry(LocalDate date, Float numOfHours) {
+        if (_dbHelper.update(date, numOfHours)) {
             Toast.makeText(getContext(), "Hours Updated", Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(getContext(), "Hours Not Updated", Toast.LENGTH_SHORT).show();

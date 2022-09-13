@@ -7,8 +7,15 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.prolificinteractive.materialcalendarview.CalendarDay;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+
 public class DBHelper extends SQLiteOpenHelper {
     public static final String HOURS_DATA = "Hoursdata";
+    public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     private ContentValues _contentValues;
 
     public DBHelper(Context context) {
@@ -30,10 +37,10 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE if exists " + HOURS_DATA);
     }
 
-    public Boolean insert(String date, Float numberOfHours) {
+    public Boolean insert(LocalDate date, Float numberOfHours) {
         SQLiteDatabase db = this.getWritableDatabase();
         _contentValues = new ContentValues();
-        _contentValues.put("DATE", date);
+        _contentValues.put("DATE", date.format(DATE_FORMATTER));
         _contentValues.put("NUMBER_OF_HOURS", numberOfHours);
 
         long result;
@@ -50,15 +57,16 @@ public class DBHelper extends SQLiteOpenHelper {
         }
     }
 
-    public Boolean update(String date, Float numberOfHours) {
+    public Boolean update(LocalDate date, Float numberOfHours) {
         SQLiteDatabase db = this.getWritableDatabase();
         _contentValues = new ContentValues();
-        _contentValues.put("DATE", date);
+        String dateAsString = date.format(DATE_FORMATTER);
+        _contentValues.put("DATE", dateAsString);
         _contentValues.put("NUMBER_OF_HOURS", numberOfHours);
 
-        try (Cursor cursor = db.rawQuery("SELECT * from " + HOURS_DATA + " where DATE = ?", new String[]{date})) {
+        try (Cursor cursor = db.rawQuery("SELECT * from " + HOURS_DATA + " where DATE = ?", new String[]{dateAsString})) {
             if (cursor.getCount() > 0) {
-                long result = db.update(HOURS_DATA, _contentValues, "Date = ?", new String[]{date});
+                long result = db.update(HOURS_DATA, _contentValues, "Date = ?", new String[]{dateAsString});
                 return result == 1;
             }
         } catch (RuntimeException e) {
@@ -81,9 +89,10 @@ public class DBHelper extends SQLiteOpenHelper {
         return false;
     }
 
-    public Boolean dateExists(String date) {
+    public Boolean dateExists(LocalDate date) {
         SQLiteDatabase db = this.getWritableDatabase();
-        try (Cursor cursor = db.rawQuery("SELECT * from " + HOURS_DATA + " where DATE = ?", new String[]{date})) {
+        try (Cursor cursor = db.rawQuery("SELECT * from " + HOURS_DATA + " where DATE = ?",
+                new String[]{date.format(DATE_FORMATTER)})) {
             if (cursor.getCount() > 0) {
                 return true;
             }
