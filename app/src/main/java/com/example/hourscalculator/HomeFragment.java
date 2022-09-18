@@ -16,8 +16,9 @@ import androidx.fragment.app.Fragment;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.textfield.TextInputEditText;
 
+import org.threeten.bp.LocalDate;
+
 import java.time.Instant;
-import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.Calendar;
@@ -66,7 +67,7 @@ public class HomeFragment extends Fragment {
             _dateView.setVisibility(View.VISIBLE);
             _dateView.setText(datePicker.getHeaderText());
             ZonedDateTime zonedDateTime = Instant.ofEpochMilli(selectedDate).atZone(ZoneOffset.UTC);
-            _date = zonedDateTime.toLocalDate();
+            _date = LocalDate.of(zonedDateTime.getYear(), zonedDateTime.getMonthValue(), zonedDateTime.getDayOfMonth());
             _dateRequired.setVisibility(TextView.INVISIBLE);
         });
 

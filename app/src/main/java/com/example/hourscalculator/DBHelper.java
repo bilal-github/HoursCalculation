@@ -9,8 +9,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import org.threeten.bp.LocalDate;
+import org.threeten.bp.format.DateTimeFormatter;
+
 import java.util.HashMap;
 
 public class DBHelper extends SQLiteOpenHelper {
@@ -102,8 +103,20 @@ public class DBHelper extends SQLiteOpenHelper {
         return false;
     }
 
-    public Cursor getAll() {
+    public HashMap<CalendarDay, Double> getAll() {
         SQLiteDatabase db = this.getWritableDatabase();
-        return db.rawQuery("SELECT * from " + HOURS_DATA, null);
+        HashMap<CalendarDay, Double> daysMap;
+        try (Cursor cursor = db.rawQuery("SELECT * from " + HOURS_DATA, null)) {
+            daysMap = new HashMap<>();
+            if (cursor.moveToFirst()) {
+                do {
+                    LocalDate localDate = LocalDate.parse(cursor.getString(1));
+                    daysMap.put(CalendarDay.from(localDate), cursor.getDouble(2));
+                } while (cursor.moveToNext());
+            }
+        } catch (RuntimeException e) {
+            throw e;
+        }
+        return daysMap;
     }
 }

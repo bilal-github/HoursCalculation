@@ -5,9 +5,15 @@
       <map>
         <entry key="..\:/GitHub/Android/HoursCalculation/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.2595" />
         <entry key="..\:/GitHub/Android/HoursCalculation/app/src/main/res/drawable/circlebackgound.xml" value="0.108" />
+        <entry key="..\:/GitHub/Android/HoursCalculation/app/src/main/res/drawable/current_day_ring.xml" value="0.16" />
+        <entry key="..\:/GitHub/Android/HoursCalculation/app/src/main/res/drawable/current_day_yellow_circle.xml" value="0.16" />
+        <entry key="..\:/GitHub/Android/HoursCalculation/app/src/main/res/drawable/days_cyan_circle.xml" value="0.1" />
         <entry key="..\:/GitHub/Android/HoursCalculation/app/src/main/res/drawable/ic_baseline_calendar_today_24.xml" value="0.169" />
         <entry key="..\:/GitHub/Android/HoursCalculation/app/src/main/res/drawable/ic_baseline_home_24.xml" value="0.169" />
         <entry key="..\:/GitHub/Android/HoursCalculation/app/src/main/res/drawable/ic_launcher_background.xml" value="0.2595" />
+        <entry key="..\:/GitHub/Android/HoursCalculation/app/src/main/res/drawable/red_circle.xml" value="0.1" />
+        <entry key="..\:/GitHub/Android/HoursCalculation/app/src/main/res/drawable/ring.xml" value="0.215" />
+        <entry key="..\:/GitHub/Android/HoursCalculation/app/src/main/res/drawable/selected_bg_color.xml" value="0.1" />
         <entry key="..\:/GitHub/Android/HoursCalculation/app/src/main/res/layout-v28/activity_main.xml" value="0.25416666666666665" />
         <entry key="..\:/GitHub/Android/HoursCalculation/app/src/main/res/layout/activity_main.xml" value="0.23645833333333333" />
         <entry key="..\:/GitHub/Android/HoursCalculation/app/src/main/res/layout/fragment_calendar.xml" value="0.49130938586326767" />
